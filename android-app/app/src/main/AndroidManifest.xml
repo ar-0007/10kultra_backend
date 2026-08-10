@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <!-- Live TV: keep CPU + Wi-Fi awake during playback so an idle box doesn't power-save
+         the network and starve/freeze the stream (ExoPlayer setWakeMode(WAKE_MODE_NETWORK)) -->
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <!-- OTA: let the app install a downloaded APK update (system shows a confirm on non-system boxes) -->
+    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
+    <!-- Reboot device (Settings → Reboot). Granted only to system/pre-installed apps on the China
+         boxes; a normal install can't reboot, so the code falls back to restarting the app. -->
+    <uses-permission android:name="android.permission.REBOOT" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
+        android:maxSdkVersion="32" />
+    <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
+    <uses-permission android:name="android.permission.READ_MEDIA_AUDIO" />
+
+    <!-- In-app QR scanner (mobile pairing): scan the TV's connect QR. -->
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="false" />
+
+    <uses-feature
+        android:name="android.hardware.usb.host"
+        android:required="false" />
+
+    <uses-feature
+        android:name="android.hardware.touchscreen"
+        android:required="false" />
+    <!-- required=false so the app also installs/shows on phones & non-leanback boxes -->
+    <uses-feature
+        android:name="android.software.leanback"
+        android:required="false" />
+
+    <application
+        android:name=".IptvApp"
+        android:allowBackup="true"
+        android:banner="@drawable/banner"
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name"
+        android:largeHeap="true"
+        android:supportsRtl="true"
+        android:usesCleartextTraffic="true"
+        android:theme="@style/Theme.TenKUltra">
+
+        <activity
+            android:name=".MainActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden"
+            android:exported="true"
+            android:theme="@style/Theme.TenKUltra">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <!-- LAUNCHER = phones / regular-launcher boxes; LEANBACK = Android TV -->
+                <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.LEANBACK_LAUNCHER" />
+            </intent-filter>
+            <!-- Mobile pairing: scanning the TV's "Connect Android app" QR opens
+                 tenkultra://connect?u=<portal>&m=<mac> → this app imports the portal + MAC. -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="tenkultra" android:host="connect" />
+            </intent-filter>
+        </activity>
+
+        <!-- OTA: receives PackageInstaller status callbacks (launches the install-confirm dialog) -->
+        <receiver
+            android:name=".data.update.UpdateInstallReceiver"
+            android:exported="false" />
+
+        <!-- OTA: relaunch the app automatically after it updates itself (seamless on system boxes) -->
+        <receiver
+            android:name=".data.update.PackageReplacedReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
+            </intent-filter>
+        </receiver>
+    </application>
+
+</manifest>

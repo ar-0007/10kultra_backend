@@ -1,0 +1,32 @@
+# ---------- secrets — never commit ----------
+.env
+.env.local
+.env.*.local
+android-app/keystore.properties
+*.jks
+*.keystore
+
+# ---------- dependencies / build output ----------
+node_modules/
+dashboard/dist/
+dashboard/.next/
+android-app/app/build/
+android-app/build/
+android-app/.gradle/
+android-app/.kotlin/
+android-app/local.properties
+*.apk
+*.aab
+
+# ---------- editors / OS ----------
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+*.log
+
+# ---------- screenshots kept out of the repo ----------
+*.png
+!brand/*.png
+!dashboard/public/*.png
+!android-app/app/src/**/*.png

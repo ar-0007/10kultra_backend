@@ -1,0 +1,112 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ── 10K Ultra theme tokens (space-separated RGB channels for Tailwind alpha support) ── */
+:root,
+:root[data-theme="dark"] {
+  --c-bg: 7 7 10;             /* onyx — the logo's black field */
+  --c-surface: 17 16 13;      /* warm charcoal panel */
+  --c-card: 23 21 17;
+  --c-card2: 35 31 24;
+  --c-border: 56 48 32;       /* dim gold hairline */
+  --c-primary: 231 181 60;    /* liquid gold */
+  --c-primary-light: 255 215 102;
+  --c-primary-dark: 169 120 27;
+  --c-text: 246 238 221;      /* warm ivory */
+  --c-muted: 166 155 133;
+  --c-ok: 76 201 122;
+  --c-warn: 224 164 88;
+  --c-danger: 224 108 94;
+  --c-shadow: 0 0 0;
+  --shadow-strength: 0.6;
+  --c-scroll: 66 56 36;
+}
+
+:root[data-theme="light"] {
+  --c-bg: 247 244 236;
+  --c-surface: 255 253 248;
+  --c-card: 255 255 255;
+  --c-card2: 243 237 224;
+  --c-border: 226 214 189;
+  --c-primary: 176 124 20;    /* darkened gold so text on white stays readable */
+  --c-primary-light: 214 163 45;
+  --c-primary-dark: 138 95 10;
+  --c-text: 30 26 18;
+  --c-muted: 118 108 90;
+  --c-ok: 34 141 88;
+  --c-warn: 178 118 34;
+  --c-danger: 198 74 58;
+  --c-shadow: 150 130 90;
+  --shadow-strength: 0.2;
+  --c-scroll: 214 202 178;
+}
+
+html, body, #root {
+  height: 100%;
+  background: rgb(var(--c-bg));
+  color: rgb(var(--c-text));
+  font-family: system-ui, "Segoe UI", Roboto, sans-serif;
+}
+
+/* A very soft gold aura behind the app, so the onyx never reads as flat black. */
+body {
+  background-image:
+    radial-gradient(1100px 520px at 12% -10%, rgb(var(--c-primary) / 0.10), transparent 60%),
+    radial-gradient(900px 460px at 100% 0%, rgb(var(--c-primary) / 0.06), transparent 55%);
+  background-attachment: fixed;
+}
+
+::selection { background: rgb(var(--c-primary)); color: rgb(var(--c-bg)); }
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: rgb(var(--c-bg)); }
+::-webkit-scrollbar-thumb { background: rgb(var(--c-scroll)); border-radius: 6px; }
+::-webkit-scrollbar-thumb:hover { background: rgb(var(--c-primary) / 0.55); }
+
+@layer components {
+  .card {
+    @apply rounded-2xl border border-gold-border bg-gold-card p-5 shadow-glow transition-colors;
+  }
+  /* Lifts on hover — used for the clickable summary tiles. */
+  .card-hover { @apply hover:border-gold-primary/45 hover:shadow-gold; }
+
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2 text-sm font-semibold
+           transition-all duration-150 focus:outline-none focus-visible:ring-2
+           focus-visible:ring-gold-primary/60;
+  }
+  .btn-primary {
+    @apply btn bg-gold-sheen text-gold-bg shadow-gold hover:brightness-110 active:brightness-95
+           disabled:cursor-not-allowed disabled:opacity-55 disabled:shadow-none;
+  }
+  .btn-ghost {
+    @apply btn border border-gold-border text-gold-ivory hover:border-gold-primary/50
+           hover:bg-gold-card2;
+  }
+  .btn-danger {
+    @apply btn border border-danger/45 text-danger hover:bg-danger/12;
+  }
+
+  .input {
+    @apply w-full rounded-xl border border-gold-border bg-gold-bg px-3 py-2 text-gold-ivory
+           placeholder-gold-muted/60 outline-none transition-colors
+           focus:border-gold-primary focus:ring-1 focus:ring-gold-primary/40;
+  }
+  .badge { @apply inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold; }
+
+  /* Section heading used at the top of every page. */
+  .page-title { @apply text-2xl font-bold tracking-tight text-gold-ivory sm:text-3xl; }
+  .page-sub { @apply mt-1 text-sm text-gold-muted; }
+
+  /* Loading placeholder bar. */
+  .skeleton {
+    @apply animate-shimmer rounded-lg;
+    background-image: linear-gradient(
+      90deg,
+      rgb(var(--c-card2)) 0%,
+      rgb(var(--c-border)) 50%,
+      rgb(var(--c-card2)) 100%
+    );
+    background-size: 720px 100%;
+  }
+}

@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">10K Ultra</string>
+    <string name="portal_url_hint">Enter Portal URL (e.g. http://server.com:8080/c/)</string>
+    <string name="connect">Connect</string>
+    <string name="mac_address">MAC Address</string>
+    <string name="connecting">Connecting…</string>
+</resources>

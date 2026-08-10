@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 320x180 TV banner -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="320dp"
+    android:height="180dp"
+    android:viewportWidth="320"
+    android:viewportHeight="180">
+    <path
+        android:fillColor="#0D0D1A"
+        android:pathData="M0,0 h320 v180 h-320 z" />
+    <path
+        android:fillColor="#1E90FF"
+        android:pathData="M130,60 h60 v60 h-60 z M150,75 l30,15 l-30,15 z"
+        android:fillType="evenOdd" />
+</vector>
