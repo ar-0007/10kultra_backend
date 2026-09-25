@@ -93,8 +93,9 @@ export default function Devices() {
       api.revokeDevice(d.id).then(load).catch(() => {});
     }
   }
-  // A device that was already assigned a server/customer before being revoked doesn't need the
-  // full assign dialog again — one click reuses its existing record and reactivates it instantly.
+  // Any device that already has a server on record (pre-existing — activated, revoked, whatever
+  // its current status) doesn't need the assign dialog again — one click reuses its existing
+  // record and reactivates it instantly, no popup.
   function reactivate(d) {
     api
       .activateDevice(d.id, {
@@ -105,9 +106,9 @@ export default function Devices() {
       .then(load)
       .catch(() => {});
   }
-  // Only a REVOKED device that already has a server on record can be one-click reactivated;
-  // a brand-new/pending device still needs the dialog to assign its first server.
-  const canQuickReactivate = (d) => d.status === "revoked" && !!d.server_url;
+  // Only a brand-new device (never assigned a server) still needs the dialog. Any pre-existing
+  // device — already activated or previously revoked — reactivates in one click, no popup.
+  const canQuickReactivate = (d) => !!d.server_url;
   function activateClick(d) {
     if (canQuickReactivate(d)) reactivate(d);
     else openEdit(d);
