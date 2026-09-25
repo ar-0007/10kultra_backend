@@ -93,6 +93,25 @@ export default function Devices() {
       api.revokeDevice(d.id).then(load).catch(() => {});
     }
   }
+  // A device that was already assigned a server/customer before being revoked doesn't need the
+  // full assign dialog again — one click reuses its existing record and reactivates it instantly.
+  function reactivate(d) {
+    api
+      .activateDevice(d.id, {
+        customer_name: d.customer_name || "",
+        payment_status: d.payment_status === "unpaid" ? "paid" : (d.payment_status || "paid"),
+        server_url: d.server_url,
+      })
+      .then(load)
+      .catch(() => {});
+  }
+  // Only a REVOKED device that already has a server on record can be one-click reactivated;
+  // a brand-new/pending device still needs the dialog to assign its first server.
+  const canQuickReactivate = (d) => d.status === "revoked" && !!d.server_url;
+  function activateClick(d) {
+    if (canQuickReactivate(d)) reactivate(d);
+    else openEdit(d);
+  }
 
   return (
     <div className="animate-fade-up">
@@ -182,7 +201,11 @@ export default function Devices() {
                 <td className="px-4 py-3 text-gold-muted">{d.app_version ?? "—"}</td>
                 <td className="px-4 py-3 text-right">
                   <div className="flex justify-end gap-2">
-                    <button onClick={() => openEdit(d)} className="btn-ghost px-2.5 py-1.5" title="Activate / assign server">
+                    <button
+                      onClick={() => activateClick(d)}
+                      className="btn-ghost px-2.5 py-1.5"
+                      title={canQuickReactivate(d) ? "Reactivate (reuses its saved server)" : "Activate / assign server"}
+                    >
                       <Power size={15} />
                     </button>
                     {d.status !== "revoked" && (
@@ -243,8 +266,8 @@ export default function Devices() {
             </div>
 
             <div className="flex gap-2 border-t border-gold-border pt-3">
-              <button onClick={() => openEdit(d)} className="btn-ghost flex-1">
-                <Power size={15} /> Activate
+              <button onClick={() => activateClick(d)} className="btn-ghost flex-1">
+                <Power size={15} /> {canQuickReactivate(d) ? "Reactivate" : "Activate"}
               </button>
               {d.status !== "revoked" && (
                 <button onClick={() => revoke(d)} className="btn-ghost flex-1 text-danger">
